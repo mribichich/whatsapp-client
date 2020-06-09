@@ -4,6 +4,21 @@ import moment from 'moment';
 import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
 
+const getChatsQuery = `
+  query GetChats {
+    chats {
+      id
+      name
+      picture
+      lastMessage {
+        id
+        content
+        createdAt
+      }
+    }
+  }
+`;
+
 const Container = styled.div`
   height: calc(100% - 56px);
   overflow-y: overlay;
@@ -60,8 +75,16 @@ const ChatsList = () => {
   const [chats, setChats] = useState<any[]>([]);
 
   useMemo(async () => {
-    const body = await fetch(`${process.env.REACT_APP_SERVER_URL}/chats`);
-    const chats = await body.json();
+    const body = await fetch(`${process.env.REACT_APP_SERVER_URL}/graphql`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ query: getChatsQuery }),
+    });
+    const {
+      data: { chats },
+    } = await body.json();
     setChats(chats);
   }, []);
 
