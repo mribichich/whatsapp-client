@@ -18,21 +18,32 @@ export type Scalars = {
 
 
 
+export type User = {
+  __typename?: 'User';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  picture?: Maybe<Scalars['URL']>;
+};
+
 export type Message = {
   __typename?: 'Message';
   id: Scalars['ID'];
   content: Scalars['String'];
   createdAt: Scalars['Date'];
   chat?: Maybe<Chat>;
+  sender?: Maybe<User>;
+  recipient?: Maybe<User>;
+  isMine: Scalars['Boolean'];
 };
 
 export type Chat = {
   __typename?: 'Chat';
   id: Scalars['ID'];
-  name: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
   picture?: Maybe<Scalars['URL']>;
   lastMessage?: Maybe<Message>;
   messages: Array<Message>;
+  participants: Array<User>;
 };
 
 export type Query = {
@@ -109,7 +120,7 @@ export type FullChatFragment = (
 
 export type MessageFragment = (
   { __typename?: 'Message' }
-  & Pick<Message, 'id' | 'createdAt' | 'content'>
+  & Pick<Message, 'id' | 'createdAt' | 'content' | 'isMine'>
   & { chat?: Maybe<(
     { __typename?: 'Chat' }
     & Pick<Chat, 'id'>
@@ -143,6 +154,7 @@ export const MessageFragmentDoc = gql`
   id
   createdAt
   content
+  isMine
   chat {
     id
   }

@@ -6,34 +6,29 @@ import {
   RouteComponentProps,
 } from 'react-router-dom';
 import AnimatedSwitch from './components/AnimatedSwitch';
+import AuthScreen from './components/AuthScreen';
 import ChatRoomScreen from './components/ChatRoomScreen';
 import ChatsListScreen from './components/ChatsListScreen';
-import { useCacheService } from './services/cache.service';
+import { withAuth } from './services/auth.service';
 
-function App() {
-  useCacheService();
-
-  return (
-    <BrowserRouter>
-      <AnimatedSwitch>
-        <Route exact path="/chats" component={ChatsListScreen} />
-
-        <Route
-          exact
-          path="/chats/:chatId"
-          component={({
-            match,
-            history,
-          }: RouteComponentProps<{ chatId: string }>) => (
+const App: React.FC = () => (
+  <BrowserRouter>
+    <AnimatedSwitch>
+      <Route exact path="/sign-(in|up)" component={AuthScreen} />
+      <Route exact path="/chats" component={withAuth(ChatsListScreen)} />
+      <Route
+        exact
+        path="/chats/:chatId"
+        component={withAuth(
+          ({ match, history }: RouteComponentProps<{ chatId: string }>) => (
             <ChatRoomScreen chatId={match.params.chatId} history={history} />
-          )}
-        />
-      </AnimatedSwitch>
-
-      <Route exact path="/" render={redirectToChats} />
-    </BrowserRouter>
-  );
-}
+          )
+        )}
+      />
+    </AnimatedSwitch>
+    <Route exact path="/" render={redirectToChats} />
+  </BrowserRouter>
+);
 
 const redirectToChats = () => <Redirect to="/chats" />;
 

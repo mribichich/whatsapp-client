@@ -1,6 +1,6 @@
 import { ApolloServer, gql, PubSub } from 'apollo-server-express';
 import { createTestClient } from 'apollo-server-testing';
-import { resetDb } from '../../src/db';
+import { resetDb, users } from '../../src/db';
 import schema from '../../src/schema';
 
 describe('Mutation.addMessage', () => {
@@ -9,7 +9,10 @@ describe('Mutation.addMessage', () => {
   it('should add message to specified chat', async () => {
     const server = new ApolloServer({
       schema,
-      context: () => ({ pubsub: new PubSub() }),
+      context: () => ({
+        pubsub: new PubSub(),
+        currentUser: users[0],
+      }),
     });
 
     const { query, mutate } = createTestClient(server);

@@ -15,7 +15,7 @@ interface ChatsListScreenProps {
 const ChatsListScreen: React.FC<ChatsListScreenProps> = ({ history }) => (
   <div>
     <Container>
-      <ChatsNavbar />
+      <ChatsNavbar history={history} />
       <ChatsList history={history} />
     </Container>
   </div>
