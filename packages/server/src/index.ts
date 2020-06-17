@@ -52,6 +52,7 @@ const server = new ApolloServer({
         request: ctx.request,
       };
     },
+    keepAlive: 5000,
   },
   playground: true,
   introspection: true,
