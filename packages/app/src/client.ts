@@ -1,12 +1,16 @@
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloClient } from 'apollo-client';
 import { ApolloLink, split } from 'apollo-link';
+import { setContext } from 'apollo-link-context';
 import { HttpLink } from 'apollo-link-http';
 import { WebSocketLink } from 'apollo-link-ws';
 import { getMainDefinition } from 'apollo-utilities';
 
 const httpUri = process.env.REACT_APP_SERVER_URL + '/graphql';
-const wsUri = httpUri.replace(/^https?/, 'ws');
+const wsUri = httpUri.replace(
+  /^https?/,
+  process.env.REACT_APP_SERVER_URL ? 'wss' : 'ws'
+);
 
 const httpLink = new HttpLink({
   uri: httpUri,
@@ -19,6 +23,15 @@ const wsLink = new WebSocketLink({
     // Automatic reconnect in case of connection error
     reconnect: true,
   },
+});
+
+const authLink = setContext((_, { headers }) => {
+  return {
+    headers: {
+      ...headers,
+      cookies: document.cookie,
+    },
+  };
 });
 
 /**
@@ -39,7 +52,7 @@ const terminatingLink = split(
   httpLink
 );
 
-const link = ApolloLink.from([terminatingLink]);
+const link = ApolloLink.from([authLink, terminatingLink]);
 
 const inMemoryCache = new InMemoryCache();
 
