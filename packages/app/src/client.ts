@@ -9,7 +9,7 @@ import { getMainDefinition } from 'apollo-utilities';
 const httpUri = process.env.REACT_APP_SERVER_URL + '/graphql';
 const wsUri = httpUri.replace(
   /^https?/,
-  process.env.REACT_APP_SERVER_URL ? 'wss' : 'ws'
+  /https/.test(process.env.REACT_APP_SERVER_URL || '') ? 'wss' : 'ws'
 );
 
 const httpLink = new HttpLink({
