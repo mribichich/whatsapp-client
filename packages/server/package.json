@@ -5,6 +5,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "build": "tsc",
     "start": "ts-node src/index.ts",
     "watch": "nodemon --watch src --ext 'ts js json' --exec yarn start",
     "format": "prettier \"**/*.ts\" --write",

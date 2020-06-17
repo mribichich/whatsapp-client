@@ -8,6 +8,8 @@
     "strictPropertyInitialization": false,
     "esModuleInterop": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
-  }
+    "emitDecoratorMetadata": true,
+    "outDir": "build"
+  },
+  "include": ["src"]
 }
