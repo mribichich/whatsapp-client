@@ -30,7 +30,14 @@ const server = new ApolloServer({
 
     // It's subscription
     if (session.connection) {
-      req.cookies = cookie.parse(req.headers.cookie || '');
+      req.cookies = cookie.parse(
+        req.headers.cookie || req.headers.cookies || ''
+      );
+    } else {
+      req.cookies = {
+        ...req.cookies,
+        ...(req.headers.cookies ? cookie.parse(req.headers.cookies) : {}),
+      };
     }
 
     return {
