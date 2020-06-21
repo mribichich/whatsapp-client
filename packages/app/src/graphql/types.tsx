@@ -50,6 +50,7 @@ export type Query = {
   __typename?: 'Query';
   chats: Array<Chat>;
   chat?: Maybe<Chat>;
+  users: Array<User>;
 };
 
 
@@ -60,12 +61,18 @@ export type QueryChatArgs = {
 export type Mutation = {
   __typename?: 'Mutation';
   addMessage?: Maybe<Message>;
+  addChat?: Maybe<Chat>;
 };
 
 
 export type MutationAddMessageArgs = {
   chatId: Scalars['ID'];
   content: Scalars['String'];
+};
+
+
+export type MutationAddChatArgs = {
+  recipientId: Scalars['ID'];
 };
 
 export type Subscription = {
@@ -100,6 +107,17 @@ export type AddMessageMutation = (
   )> }
 );
 
+export type UsersListQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UsersListQuery = (
+  { __typename?: 'Query' }
+  & { users: Array<(
+    { __typename?: 'User' }
+    & UserFragment
+  )> }
+);
+
 export type ChatFragment = (
   { __typename?: 'Chat' }
   & Pick<Chat, 'id' | 'name' | 'picture'>
@@ -125,6 +143,11 @@ export type MessageFragment = (
     { __typename?: 'Chat' }
     & Pick<Chat, 'id'>
   )> }
+);
+
+export type UserFragment = (
+  { __typename?: 'User' }
+  & Pick<User, 'id' | 'name' | 'picture'>
 );
 
 export type ChatsQueryVariables = Exact<{ [key: string]: never; }>;
@@ -179,6 +202,13 @@ export const FullChatFragmentDoc = gql`
 }
     ${ChatFragmentDoc}
 ${MessageFragmentDoc}`;
+export const UserFragmentDoc = gql`
+    fragment User on User {
+  id
+  name
+  picture
+}
+    `;
 export const GetChatDocument = gql`
     query GetChat($chatId: ID!) {
   chat(chatId: $chatId) {
@@ -245,6 +275,38 @@ export function useAddMessageMutation(baseOptions?: ApolloReactHooks.MutationHoo
 export type AddMessageMutationHookResult = ReturnType<typeof useAddMessageMutation>;
 export type AddMessageMutationResult = ApolloReactCommon.MutationResult<AddMessageMutation>;
 export type AddMessageMutationOptions = ApolloReactCommon.BaseMutationOptions<AddMessageMutation, AddMessageMutationVariables>;
+export const UsersListDocument = gql`
+    query UsersList {
+  users {
+    ...User
+  }
+}
+    ${UserFragmentDoc}`;
+
+/**
+ * __useUsersListQuery__
+ *
+ * To run a query within a React component, call `useUsersListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUsersListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUsersListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUsersListQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<UsersListQuery, UsersListQueryVariables>) {
+        return ApolloReactHooks.useQuery<UsersListQuery, UsersListQueryVariables>(UsersListDocument, baseOptions);
+      }
+export function useUsersListLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<UsersListQuery, UsersListQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<UsersListQuery, UsersListQueryVariables>(UsersListDocument, baseOptions);
+        }
+export type UsersListQueryHookResult = ReturnType<typeof useUsersListQuery>;
+export type UsersListLazyQueryHookResult = ReturnType<typeof useUsersListLazyQuery>;
+export type UsersListQueryResult = ApolloReactCommon.QueryResult<UsersListQuery, UsersListQueryVariables>;
 export const ChatsDocument = gql`
     query Chats {
   chats {

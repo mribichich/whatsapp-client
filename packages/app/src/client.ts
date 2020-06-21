@@ -22,8 +22,19 @@ const wsLink = new WebSocketLink({
   options: {
     // Automatic reconnect in case of connection error
     reconnect: true,
+    connectionParams: () => ({ cookies: document.cookie }),
   },
 });
+
+const subscriptionMiddleware = {
+  applyMiddleware: async (options, next) => {
+    options.cookies = document.cookie;
+    next();
+  },
+};
+
+// @ts-ignore
+wsLink.subscriptionClient.use([subscriptionMiddleware]);
 
 const authLink = setContext((_, { headers }) => {
   return {

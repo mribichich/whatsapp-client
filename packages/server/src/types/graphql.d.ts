@@ -48,6 +48,7 @@ export type Query = {
   __typename?: 'Query';
   chats: Array<Chat>;
   chat?: Maybe<Chat>;
+  users: Array<User>;
 };
 
 
@@ -58,12 +59,18 @@ export type QueryChatArgs = {
 export type Mutation = {
   __typename?: 'Mutation';
   addMessage?: Maybe<Message>;
+  addChat?: Maybe<Chat>;
 };
 
 
 export type MutationAddMessageArgs = {
   chatId: Scalars['ID'];
   content: Scalars['String'];
+};
+
+
+export type MutationAddChatArgs = {
+  recipientId: Scalars['ID'];
 };
 
 export type Subscription = {
@@ -216,10 +223,12 @@ export type ChatResolvers<ContextType = MyContext, ParentType extends ResolversP
 export type QueryResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   chats?: Resolver<Array<ResolversTypes['Chat']>, ParentType, ContextType>;
   chat?: Resolver<Maybe<ResolversTypes['Chat']>, ParentType, ContextType, RequireFields<QueryChatArgs, 'chatId'>>;
+  users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
 };
 
 export type MutationResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   addMessage?: Resolver<Maybe<ResolversTypes['Message']>, ParentType, ContextType, RequireFields<MutationAddMessageArgs, 'chatId' | 'content'>>;
+  addChat?: Resolver<Maybe<ResolversTypes['Chat']>, ParentType, ContextType, RequireFields<MutationAddChatArgs, 'recipientId'>>;
 };
 
 export type SubscriptionResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
